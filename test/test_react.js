@@ -12,7 +12,7 @@ describe("DotTag (ReactJS)", () => {
             render: function () {
                 return DotTag
                 .React()
-                    .li()(this.props.itemName)._li()
+                    .li({className: "A"})(this.props.itemName)._li()
                 .endReact();
             }
         });
@@ -50,7 +50,73 @@ describe("DotTag (ReactJS)", () => {
             .R(MainComponent)._R()
         .renderTo(pg);
     });
-    // Let's do this
-    // https://pankajparashar.com/posts/todo-app-react-js/
+
+    describe("invariant tests", () => {
+        var rootElt;
+        beforeEach(function () {
+            rootElt = document.createElement("div");
+            rootElt.id = "react-root";
+            document.body.appendChild(rootElt);
+        });
+        afterEach(function () {
+            ReactDOM.unmountComponentAtNode(rootElt);
+            rootElt.parentNode.removeChild(rootElt);
+            rootElt = null;
+        });
+
+        it("className on root", () => {
+            DotTag.React()
+                .div({className: "a"})
+                ._div()
+            .renderTo(rootElt);
+            expect(rootElt.firstChild.className).to.equal('a');
+        });
+        it("'class' attribute on root", () => {
+            DotTag.React()
+                .div({"class": "a"})
+                ._div()
+            .renderTo(rootElt);
+            expect(rootElt.firstChild.className).to.equal('a');
+        });
+        it("classList attribute on root", () => {
+            DotTag.React()
+                .div({classList: ["a", "b", "c"]})
+                ._div()
+            .renderTo(rootElt);
+            expect(rootElt.firstChild.className).to.equal('a b c');
+        });
+        it('className prop on root component', () => {
+            var Main = React.createClass({
+                render: function () {
+                    return DotTag.React()
+                        .div({className: "a"})
+                        ._div()
+                    .toElement();
+                }
+            });
+
+            DotTag.React()
+                .R(Main)
+                ._R()
+            .renderTo(rootElt);
+            expect(rootElt.firstChild.className).to.equal('a');
+        });
+        it('injecting className prop on root component', () => {
+            var Main = React.createClass({
+                render: function () {
+                    return DotTag.React()
+                        .div()
+                        ._div()
+                    .toElement();
+                }
+            });
+
+            DotTag.React()
+                .R(Main, {className: 'a'})
+                ._R()
+            .renderTo(rootElt);
+            expect(rootElt.firstChild.className).to.equal('a');
+        });
+    });
 });
 
