@@ -27,11 +27,16 @@ describe("DotTag (ReactJS)", () => {
                 }
             },
             render: function () {
-                return DotTag.React()
-                .div()
+                return DotTag.React().div()
                     .h2()("Heading2")._h2()
                     .hr()
                     .ol()
+                        (this.state.memos.map(function (elem) {
+                            return DotTag.React()
+                                .R(ListItemComponent, {itemName: elem})
+                                ._R()
+                            .endReact();
+                        }))
                         .For(this.state.memos, function (elem) {this
                             .R(ListItemComponent, {itemName: elem})._R()
                         })

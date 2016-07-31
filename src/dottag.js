@@ -154,11 +154,9 @@ BaseHandler.prototype = {
         case "undefined":
             break;
         case "object":
-            if (arg === null || arg.sig === "DotTag__tf") {
-                break;
-            }
-            // falling through
-        default:
+            break;
+        case "boolean":
+        case "number":
             this.putText(arg + "", tagFn);
             break;
         }
@@ -649,6 +647,14 @@ function ReactJSHandler() {
 
 ReactJSHandler.prototype = Object.create(BaseSyntacticHTMLHandler.prototype);
 update(ReactJSHandler.prototype, {
+    willPutContent: function (rawContent) {
+        if (typeof rawContent === "object") {
+            var createrArguments = this.getCurState().createrArguments;
+            if (createrArguments)
+                createrArguments.push(rawContent);
+            return false;
+        }
+    },
     didMeetOpeningTag: function (tagName, tagInfo, args, tagFn) {
         BaseSyntacticHTMLHandler.prototype.didMeetOpeningTag.apply(this, arguments);
 
