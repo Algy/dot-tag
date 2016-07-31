@@ -427,6 +427,13 @@ update(BaseHTMLHandler.prototype, {
             }
             delete attrs.classList;
         }
+
+        if (attrs.data && typeof attrs.data === "object") {
+            for (var name in attrs.data) {
+                attrs["data-" + name] = attrs.data[name];
+            }
+            delete attrs.data;
+        }
         return attrs;
     }
 });

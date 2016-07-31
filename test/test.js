@@ -208,6 +208,18 @@ describe('DotTag (HTML & DOM)', () => {
         });
     });
 
+    describe("Parsing attribute", () => {
+        it("data-*", () => {
+            DotTag.DOM()
+            .section({data: {"a": 1, "b": 2}})._section()
+            .renderTo(iframe.contentWindow.document.body);
+            var renderedElt = iframe.contentWindow.document.body.firstChild;
+            expect(renderedElt.hasAttribute("data")).to.equal(false);
+            expect(renderedElt.getAttribute("data-a")).to.equal("1");
+            expect(renderedElt.getAttribute("data-b")).to.equal("2");
+        });
+    });
+
     describe("Content body", () => {
         it("includes number", () => {
             DotTag.DOM()

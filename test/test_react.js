@@ -101,22 +101,6 @@ describe("DotTag (ReactJS)", () => {
             .renderTo(rootElt);
             expect(rootElt.firstChild.className).to.equal('a');
         });
-        it('injecting className prop on root component', () => {
-            var Main = React.createClass({
-                render: function () {
-                    return DotTag.React()
-                        .div()
-                        ._div()
-                    .toElement();
-                }
-            });
-
-            DotTag.React()
-                .R(Main, {className: 'a'})
-                ._R()
-            .renderTo(rootElt);
-            expect(rootElt.firstChild.className).to.equal('a');
-        });
     });
 });
 
