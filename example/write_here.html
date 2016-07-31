@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+    </head>
+    <body>
+    <script src="../src/dottag.js"></script>
+    <script>
+        DotTag.HTML()
+        .div("class", "container")
+            .h2()("Hello DotTag!")._h2()
+            .hr()
+            .p()
+                ("This is how DotTag is used to generate html in-place")
+                (", demonstrating the ability of DotTag to build a html source and render it")
+            ._p()
+            .p()
+                ("In fact, this method is unpractical as it may have disadvantage to its performance")
+                (", comparing to emitting HTML template on server side.")
+                ("But, since it shows DotTag's expressive power quite well, it supports .writeHere() method")
+                (" just for a showcase")
+            ._p()
+        ._div()
+        .writeHere()
+    </script>
+    </body>
+</html>
