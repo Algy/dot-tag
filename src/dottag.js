@@ -632,10 +632,10 @@ update(HTMLStringHandler.prototype, {
 function ReactJSHandler() {
     BaseSyntacticHTMLHandler.apply(this);
 
-    if (global.React) {
+    if (!global.React) {
         throw TypeError("React is not found");
     }
-    if (global.ReactDOM) {
+    if (!global.ReactDOM) {
         throw TypeError("ReactDOM is not found");
     }
 
@@ -647,7 +647,7 @@ function ReactJSHandler() {
     this._bakedComponent = null;
 }
 
-ReactJSHandler.prototype = Object.create(BaseSyntacticHTMLHandler);
+ReactJSHandler.prototype = Object.create(BaseSyntacticHTMLHandler.prototype);
 update(ReactJSHandler.prototype, {
     didMeetOpeningTag: function (tagName, tagInfo, args, tagFn) {
         BaseSyntacticHTMLHandler.prototype.didMeetOpeningTag.apply(this, arguments);
@@ -669,6 +669,10 @@ update(ReactJSHandler.prototype, {
     },
     willMeetClosingTag: function (tagName, tagInfo, args, tagFn) {
         BaseSyntacticHTMLHandler.prototype.willMeetClosingTag.apply(this, arguments);
+        if (tagInfo.type !== "html" && tagInfo.type !== "reactComponent") {
+            return;
+        }
+
         var curState = this.getCurState(), prevState = this.getPrevState();
         var prevCreaterArguments = prevState.createrArguments;
         var bakedComponent = React.createElement.apply(React, curState.createrArguments);
@@ -683,18 +687,23 @@ update(ReactJSHandler.prototype, {
         }
     },
     didMeetText: function (text, tagFn) {
-        this.getCurState().createrArguments.push(text);
+        var createrArguments = this.getCurState().createrArguments;
+        if (createrArguments)
+            createrArguments.push(text);
     },
     toElement: function () {
         this.checkTopFrame();
         return this.bakedComponent;
+    },
+    endReact: function () {
+        return this.toElement();
     },
     renderTo: function (destElt) {
         return ReactDOM.render(this.toElement(), destElt);
     },
     getProxyMethodNames: function () {
         var supers = BaseSyntacticHTMLHandler.prototype.getProxyMethodNames.apply(this, arguments);
-        return supers.concat(["appendTo", "renderTo", "toElement"]);
+        return supers.concat(["appendTo", "renderTo", "toElement", "endReact"]);
     }
 });
 
